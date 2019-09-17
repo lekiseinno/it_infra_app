@@ -21,9 +21,21 @@ body{
 </style>
 <?php
 session_start();
+include('../class/connect.php');
+$class_check = new Sqlsrv_quotation_approve();
+      $class_check->getConnect();
+            // Select
+            $query=$class_check->getQuery("
+                SELECT * FROM Account WHERE username = '".$_POST["username"]."' and password = '".$_POST["password"]."'
+            ");
+            while($result=$class_check->getResult($query)){
+                $username = $result["username"];
+                $name = $result["name"];
+            }
 // check date expiry
-if($_POST["username"] == 'infra20i9' && $_POST["password"] == '12345'){
-    $_SESSION["username"] = $_POST["username"];
+if($username != ''){
+    $_SESSION["username"] = $username;
+    $_SESSION["name"] = $name;
     echo "<div class='text-center'>";
     echo "<div class='spinner-border text-dark' role='status' style='width: 5rem; height: 5rem;'>";
     echo "<span class='sr-only'>Loading...</span>";
@@ -38,4 +50,5 @@ if($_POST["username"] == 'infra20i9' && $_POST["password"] == '12345'){
     echo "</script>";
 }
   session_write_close();
+  $class_check->destroy();
 ?>

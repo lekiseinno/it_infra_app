@@ -1,4 +1,4 @@
-				<?php if($_POST["status"]=="01"){?>
+				<?php if($_POST["status"]=="1"){?>
 					<div class="btn-group btn-group-toggle" data-toggle="buttons">
 					  <label class="btn btn-success active">
 					    <input type="radio" name="approve" id="approve1" value="1" autocomplete="off" checked><i class="fas fa-check"></i> อนุมัติ
