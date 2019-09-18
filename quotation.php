@@ -58,7 +58,7 @@
 		                </div>
 		                <div class="card-body" style="display: inline-flex;">
 							<div class="col-lg-3">
-								<select name="depart" id="depart" class="form-control" required>
+								<select name="depart" id="depart" class="form-control" style="width: 100%;" required>
 									<option value='#'>แผนกที่ส่งซ่อม</option>
 									<?php foreach ($company_Code as $key => $value) {?>
 									<option value="<?php echo $value." | ".$department_Name[$key] ?>"><?php echo $value." | ".$department_Name[$key]; ?></option>
@@ -66,7 +66,7 @@
 								</select>
 							</div>
 							<div class="col-lg-3">
-								<select name="fix" id="fix" class="form-control" required>
+								<select name="fix" id="fix" class="form-control" style="width: 100%;" required>
 									<option value="1">ซ่อม</option>
 									<option value="0">ซื้อใหม่</option>
 								</select>
@@ -83,7 +83,7 @@
 								<input type="text" name="supplier" id="supplier" placeholder="Supplier" class="form-control" required> 
 							</div>	
 							<div class="col-sm-3" style="padding-bottom: 1%;">
-								<select name="status" id="status" class="form-control" required>
+								<select name="status" id="status" class="form-control" style="width: 100%;" required>
 									<option value="#">สถานะ</option>
 									<option value="1">ได้รับ</option>
 									<option value="0">รอ</option>
@@ -156,8 +156,8 @@
 											<th>Status Approve</th>
 											<th>ผู้บันทึก</th>
 											<th>วันที่บันทึก</th>
-											<th>ผู้อัพเดต</th>
-											<th>วันที่อัพเดต</th>
+											<!-- <th>ผู้อัพเดต</th> -->
+											<!-- <th>วันที่อัพเดต</th> -->
 											<th>สถานะรายการ</th>
 											<th>Update</th>
 											<th>Delete</th>
@@ -199,9 +199,9 @@
 											<td><?php echo $approves; ?></td>
 
 											<td><?php echo $user_create[$row] ?></td>
-											<td><?php echo $date_create[$row] ?></td>
-											<td><?php echo $user_update[$row] ?></td>
-											<td><?php echo $date_update[$row] ?></td>
+											<td><?php echo date("Y-m-d H:i", strtotime($date_create[$row])); ?></td>
+											<!-- <td><?php echo $user_update[$row] ?></td> -->
+											<!-- <td><?php echo $date_update[$row] ?></td> -->
 											<?php 
 												if($list_status[$row]=="1"){
 													$list_status_sys = "<div class='bg-green'>ใช้งาน</div>";
@@ -246,7 +246,7 @@
 												  	<div class="form-group row">
 												    	<label for="inputEmail3" class="col-sm-3 col-form-label">สถานะการซ่อม</label>
 												    	<div class="col-sm-9">	
-														<select name="fix" id="fix" class="form-control" required>
+														<select name="fix" id="fix" class="form-control" style="width: 100%;" required>
 															<option value="1" <?php if($fix_status[$row] == 1){ echo " selected=\"selected\""; } ?>>ซ่อม</option>
 															<option value="0" <?php if($fix_status[$row] == 0){ echo " selected=\"selected\""; } ?>>ซื้อใหม่</option>
 														</select>
@@ -273,7 +273,7 @@
 												  	<div class="form-group row">
 												    	<label for="inputEmail3" class="col-sm-3 col-form-label">Status การขอ</label>
 												    	<div class="col-sm-9">
-														<select name="status" id="status<?php echo $ids ?>" class="form-control" required>
+														<select name="status" id="status<?php echo $ids ?>" class="form-control" style="width: 100%;" required>
 															<option value="1" <?php if($quotation_status[$row] == 1){ echo " selected=\"selected\""; } ?>>ได้รับ</option>
 															<option value="0" <?php if($quotation_status[$row] == 0){ echo " selected=\"selected\""; } ?>>รอ</option>
 														</select>
