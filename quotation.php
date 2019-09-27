@@ -59,7 +59,7 @@
 		                <div class="card-body" style="display: inline-flex;">
 							<div class="col-lg-3">
 								<select name="depart" id="depart" class="form-control" style="width: 100%;" required>
-									<option value='#'>แผนกที่ส่งซ่อม</option>
+									<option value='#'>แผนกที่ขอ</option>
 									<?php foreach ($company_Code as $key => $value) {?>
 									<option value="<?php echo $value." | ".$department_Name[$key] ?>"><?php echo $value." | ".$department_Name[$key]; ?></option>
 									<?php  } ?>
@@ -139,7 +139,7 @@
 						<!-- DataTales Example -->
 				          <div class="card shadow mb-4">
 				            <div class="card-header py-3">
-				              <h6 class="m-0 font-weight-bold text-primary">Quotation Table</h6>
+				              <h6 class="m-0 font-weight-bold text-primary">Quotation Table | <a href="report/quotation_report.php" style="color:green;" target="_BLANK"><i class="far fa-file-excel"></i> Quotation Report</a></h6>
 				            </div>
 				            <div class="card-body">
 				              <div class="table-responsive">
@@ -160,7 +160,7 @@
 											<!-- <th>วันที่อัพเดต</th> -->
 											<th>สถานะรายการ</th>
 											<th>Update</th>
-											<th>Delete</th>
+											<th>ยกเลิก</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -177,7 +177,7 @@
 											?>
 											<td><?php echo $fix_status_bg ?></td>
 											<td><?php echo $remark[$row] ?></td>
-											<td><?php echo $price[$row] ?></td>
+											<td><?php echo number_format($price[$row]) ?></td>
 											<td><?php echo $supplier[$row] ?></td>
 											<?php 
 												if($quotation_status[$row]=="1"){
@@ -193,7 +193,7 @@
 												}elseif($approve[$row]=="0"){
 													$approves = "<div class='bg-red'>ไม่อนุมัติ</div>";
 												}else{
-													$approves = "<div class='bg-red'>-</div>";
+													$approves = "<div class='bg-red'>รอ</div>";
 												}
 											?>
 											<td><?php echo $approves; ?></td>
@@ -229,8 +229,8 @@
 											        <form action="process/update_data.php" method="POST">
 											        <div class="modal-body">
 											        <div class="form-group row">
-												    	<label for="inputEmail3" class="col-sm-3 col-form-label">แผนกที่ส่งซ่อม</label>
-												    	<div class="col-sm-9">	
+												    	<label for="inputEmail3" class="col-sm-4 col-form-label">แผนกที่ส่งซ่อม</label>
+												    	<div class="col-sm-8">	
 											        	<select name="depart" id="depart_edit<?php echo $ids ?>" style="width: 100%;" class="form-control" required>
 															<?php foreach ($company_Code as $key => $value) {?>
 															<option value="<?php echo $value." | ".$department_Name[$key] ?>" <?php if($value." | ".$department_Name[$key] == $department[$row]){ echo " selected=\"selected\""; } ?>><?php echo $value." | ".$department_Name[$key]; ?></option>
@@ -244,8 +244,8 @@
 														</div>
 												  	</div>
 												  	<div class="form-group row">
-												    	<label for="inputEmail3" class="col-sm-3 col-form-label">สถานะการซ่อม</label>
-												    	<div class="col-sm-9">	
+												    	<label for="inputEmail3" class="col-sm-4 col-form-label">สถานะการซ่อม</label>
+												    	<div class="col-sm-8">	
 														<select name="fix" id="fix" class="form-control" style="width: 100%;" required>
 															<option value="1" <?php if($fix_status[$row] == 1){ echo " selected=\"selected\""; } ?>>ซ่อม</option>
 															<option value="0" <?php if($fix_status[$row] == 0){ echo " selected=\"selected\""; } ?>>ซื้อใหม่</option>
@@ -253,36 +253,42 @@
 														</div>
 												  	</div>
 												  	<div class="form-group row">
-												    	<label for="inputEmail3" class="col-sm-3 col-form-label">สาเหตุ</label>
-												    	<div class="col-sm-9">
+												    	<label for="inputEmail3" class="col-sm-4 col-form-label">สาเหตุ</label>
+												    	<div class="col-sm-8">
 														<textarea name="remark" id="remark" class="form-control" placeholder="สาเหตุ" required><?php echo $remark[$row] ?></textarea>
 														</div>
 												  	</div>
 												  	<div class="form-group row">
-												    	<label for="inputEmail3" class="col-sm-3 col-form-label">ราคา</label>
-												    	<div class="col-sm-9">
+												    	<label for="inputEmail3" class="col-sm-4 col-form-label">ราคา</label>
+												    	<div class="col-sm-8">
 														<input type="number" name="price" id="price" value="<?php echo $price[$row] ?>" class="form-control" placeholder="ราคา" required>
 														</div>
 												  	</div>
 												  	<div class="form-group row">
-												    	<label for="inputEmail3" class="col-sm-3 col-form-label">Supplier</label>
-												    	<div class="col-sm-9">
+												    	<label for="inputEmail3" class="col-sm-4 col-form-label">Supplier</label>
+												    	<div class="col-sm-8">
 														<input type="text" name="supplier" id="supplier" value="<?php echo $supplier[$row] ?>" placeholder="Supplier" class="form-control" required> 
 														</div>
 												  	</div>
 												  	<div class="form-group row">
-												    	<label for="inputEmail3" class="col-sm-3 col-form-label">Status การขอ</label>
-												    	<div class="col-sm-9">
+												    	<label for="inputEmail3" class="col-sm-4 col-form-label">Status การขอ</label>
+												    	<div class="col-sm-8">
+												    	<?php if($quotation_status[$row] == 0){ ?>
 														<select name="status" id="status<?php echo $ids ?>" class="form-control" style="width: 100%;" required>
 															<option value="1" <?php if($quotation_status[$row] == 1){ echo " selected=\"selected\""; } ?>>ได้รับ</option>
 															<option value="0" <?php if($quotation_status[$row] == 0){ echo " selected=\"selected\""; } ?>>รอ</option>
 														</select>
+														<?php }else{?>
+															<label for="inputEmail3" class="col-sm-8 col-form-label">ได้รับแล้ว</label>
+															<input type="hidden" name="status" id="status" value="1">
+														<?php } ?>
 														</div>
 												  	</div>
 												  	<div class="result_edit">
 												  		<div class="form-group row">
-												    	<label for="inputEmail3" class="col-sm-3 col-form-label">Status Approved</label>
-												    	<div class="col-sm-9">
+												    	<label for="inputEmail3" class="col-sm-4 col-form-label">Status Approved</label>
+												    	<div class="col-sm-8">
+												    	<?php if($quotation_status[$row] == 0){ ?>
 														<div class="btn-group btn-group-toggle" data-toggle="buttons">
 														  <label class="btn btn-success active">
 														    <input type="radio" name="approve" id="approve1" value="1" autocomplete="off" <?php if($approve[$row]=="1"){ echo "checked"; } ?>><i class="fas fa-check"></i> อนุมัติ
@@ -291,6 +297,15 @@
 														    <input type="radio" name="approve" id="approve2" value="0" autocomplete="off" <?php if($approve[$row]=="0"){ echo "checked"; } ?>><i class="fas fa-times"></i> ไม่อนุมัติ
 														  </label>
 														</div>
+														<?php }else{?>
+														<?php if($approve[$row]=="1"){
+																$approve_status = "อนุมัติ";
+															}else{ 
+																$approve_status = "ไม่อนุมัติ";
+															} ?>
+															<label for="inputEmail3" class="col-sm-8 col-form-label"><?php echo $approve_status ?></label>
+															<input type="hidden" name="approve" id="status" value="<?php echo $approve[$row] ?>">
+														<?php } ?>
 														</div>
 														</div>
 												  	</div>
@@ -313,7 +328,7 @@
 											        </div>
 											        <div class="modal-footer">
 											          <button class="btn btn-secondary" type="reset"><i class="fas fa-redo-alt"></i> Cancel</button>
-											          <button class="btn btn-success" type="submit"><i class="fas fa-edit"></i> Edit</button>
+											          <button class="btn btn-success" type="submit"><i class="fa fa-download"></i> Save</button>
 											        </div>
 											        </form>
 											      </div>
@@ -323,7 +338,7 @@
 											<span class="icon text-white-50">
 						                      <i class="fas fa-trash"></i>
 						                    </span>
-						                    <span class="text">DELETE</span></a></td>
+						                    <span class="text">ยกเลิก</span></a></td>
 										</tr>
 										<?php } ?>
 									</tbody>

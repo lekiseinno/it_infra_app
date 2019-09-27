@@ -6,18 +6,32 @@ $class_con_quotation->getConnect();
 if($_REQUEST["method"]=="printer"){
 	if($_REQUEST["method_status"]=="add"){
 		// Insert
-		$list_status = "1";
-		$query=$class_con_quotation->getQuery("
-		    INSERT INTO Printer_Approve (brand,model,supplier,remark,department,date_approve,num_date,status,user_create,date_create,list_status)
-	    	VALUES ('".$_POST["brand"]."','".$_POST["model"]."','".$_POST["supplier"]."','".$_POST["remark"]."',
-	     	'".$_POST["depart"]."','".date("Y-m-d H:i:s")."','".$_POST["num_date"]."','".$_POST["status"]."','".$_SESSION["username"]."','".date("Y-m-d H:i:s")."','".$list_status."')
-		");
+		if($_POST["status"]=="1"){
+			$list_status = "1";
+			$query=$class_con_quotation->getQuery("
+			    INSERT INTO Printer_Approve (brand,model,supplier,remark,department,date_approve,date_receive,status,user_create,date_create,list_status)
+				VALUES ('".$_POST["brand"]."','".$_POST["model"]."','".$_POST["supplier"]."','".$_POST["remark"]."','".$_POST["depart"]."','".date("Y-m-d H:i:s")."','".date("Y-m-d H:i:s")."','".$_POST["status"]."','".$_SESSION["username"]."','".date("Y-m-d H:i:s")."','".$list_status."')
+			");
+		}else{
+			$list_status = "1";
+			$query=$class_con_quotation->getQuery("
+			    INSERT INTO Printer_Approve (brand,model,supplier,remark,department,date_approve,status,user_create,date_create,list_status)
+				VALUES ('".$_POST["brand"]."','".$_POST["model"]."','".$_POST["supplier"]."','".$_POST["remark"]."','".$_POST["depart"]."','".date("Y-m-d H:i:s")."','".$_POST["status"]."','".$_SESSION["username"]."','".date("Y-m-d H:i:s")."','".$list_status."')
+			");
+		}
 	}elseif($_REQUEST["method_status"]=="edit"){
 		// Update
-		$query=$class_con_quotation->getQuery("
-			UPDATE Printer_Approve SET brand = '".$_POST["brand"]."',model = '".$_POST["model"]."',supplier = '".$_POST["supplier"]."',remark = '".$_POST["remark"]."',department = '".$_POST["depart"]."',num_date = '".$_POST["num_date"]."',status = '".$_POST["status"]."',user_update = '".$_SESSION["username"]."',date_update = '".date("Y-m-d H:i:s")."'
-	 		WHERE id = '".$_REQUEST["id"]."'
-		");
+		if($_POST["status"]=="1"){
+			$query=$class_con_quotation->getQuery("
+				UPDATE Printer_Approve SET brand = '".$_POST["brand"]."',model = '".$_POST["model"]."',supplier = '".$_POST["supplier"]."',remark = '".$_POST["remark"]."',department = '".$_POST["depart"]."',date_receive = '".date("Y-m-d H:i:s")."',status = '".$_POST["status"]."',user_update = '".$_SESSION["username"]."',date_update = '".date("Y-m-d H:i:s")."'
+		 		WHERE id = '".$_REQUEST["id"]."'
+			");
+		}else{
+			$query=$class_con_quotation->getQuery("
+				UPDATE Printer_Approve SET brand = '".$_POST["brand"]."',model = '".$_POST["model"]."',supplier = '".$_POST["supplier"]."',remark = '".$_POST["remark"]."',department = '".$_POST["depart"]."',status = '".$_POST["status"]."',user_update = '".$_SESSION["username"]."',date_update = '".date("Y-m-d H:i:s")."'
+		 		WHERE id = '".$_REQUEST["id"]."'
+			");
+		}
 	}elseif($_REQUEST["method_status"]=="delete"){
 		// Delete
 		$list_status = "0";

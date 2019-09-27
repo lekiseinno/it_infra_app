@@ -32,6 +32,27 @@
 		padding: .600rem .75rem !important;
 	}
 </style>
+<?php 
+function checkdate_present($expire_date,$today_date){
+/* Expire Date */
+$expire_explode = explode("-", $expire_date);
+$expire_day = $expire_explode[0];
+$expire_month = $expire_explode[1];
+$expire_year = $expire_explode[2];
+
+/* Today Date */
+$today_explode = explode("-", $today_date);
+$today_day = $today_explode[0];
+$today_month = $today_explode[1];
+$today_year = $today_explode[2];
+
+$expire = gregoriantojd($expire_month,$expire_day,$expire_year);
+$today = gregoriantojd($today_month,$today_day,$today_year);
+
+$date_current = $expire-$today; //หาวันที่ยังเหลืออยู่
+return $date_current;
+}
+?>
 <body id="page-top">
 	<!-- Page Wrapper -->
   <div id="wrapper">
@@ -79,9 +100,9 @@
 									<?php  } ?>
 								</select>
 							</div>
-							<div class="col-sm-3">
-								<input type="number" name="num_date" id="num_date" placeholder="จำนวนวัน" class="form-control" required> 
-							</div>	
+							<!-- <div class="col-sm-3"> -->
+								<!-- <input type="number" name="num_date" id="num_date" placeholder="จำนวนวัน" class="form-control" required>  -->
+							<!-- </div>	 -->
 							<div class="col-sm-3" style="padding-bottom: 1%;">
 								<select name="status" id="status" class="form-control" style="width: 100%;" required>
 									<option value="1">ได้รับ</option>
@@ -115,7 +136,7 @@
                 $remark[] = $result["remark"];
                 $department[] = $result["department"];
                 $date_approve[] = $result["date_approve"];
-                $num_date[] = $result["num_date"];
+                $date_receive[] = $result["date_receive"];
                 $status[] = $result["status"];
                 $user_create[] = $result["user_create"];
                 $date_create[] = $result["date_create"];
@@ -152,7 +173,7 @@
 											<th>สาเหตุ</th>
 											<th>แผนกที่ส่งซ่อม</th>
 											<th>วันที่ส่ง</th>
-											<th>จำนวนวัน</th>
+											<th>จำนวนวันที่ส่งซ่อม</th>
 											<th>สถานะรับคืน</th>
 											<th>ผู้บันทึก</th>
 											<th>วันที่บันทึก</th>
@@ -160,7 +181,7 @@
 											<!-- <th>วันที่อัพเดต</th> -->
 											<th>สถานะรายการ</th>
 											<th>Update</th>
-											<th>Delete</th>
+											<th>ยกเลิก</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -173,7 +194,16 @@
 											<td><?php echo $remark[$row] ?></td>
 											<td><?php echo $department[$row] ?></td>
 											<td><?php echo date("Y-m-d H:i", strtotime($date_approve[$row])); ?></td>
-											<td><?php echo $num_date[$row] ?></td>
+											<?php 
+											if($status[$row]=="0"){
+												$date_check = str_replace('-','',checkdate_present(date("d-m-Y", strtotime($date_approve[$row])),date("d-m-Y"))); 
+												$status_date_fix = $date_check." วัน";
+											}else{
+												$date_check = str_replace('-','',checkdate_present(date("d-m-Y", strtotime($date_approve[$row])),date("d-m-Y", strtotime($date_receive[$row]))));
+												$status_date_fix = "วันที่ได้รับ ".date("Y-m-d H:i", strtotime($date_receive[$row]))." จำนวนวันซ่อม (".$date_check.") วัน";
+											}
+											?>
+											<td><?php echo $status_date_fix ?></td>
 											<?php 
 												if($status[$row]=="1"){
 													$status_bg = "<div class='bg-green'>ได้รับ</div>";
@@ -182,7 +212,6 @@
 												}
 											?>
 											<td><?php echo $status_bg; ?></td>
-
 											<td><?php echo $user_create[$row] ?></td>
 											<td><?php echo date("Y-m-d H:i", strtotime($date_create[$row])); ?></td>
 											<!-- <td><?php echo $user_update[$row] ?></td> -->
@@ -252,19 +281,25 @@
 														</script>
 											        	</div>
 												  	</div>
-											        <div class="form-group row">
+											        <!-- <div class="form-group row">
 												    	<label for="inputEmail3" class="col-sm-3 col-form-label">จำนวนวัน</label>
 												    	<div class="col-sm-9">
 											        	<input type="number" name="num_date" id="num_date" class="form-control" placeholder="" value="<?php echo $num_date[$row] ?>">
 											        	</div>
-												  	</div>
+												  	</div> -->
 											        <div class="form-group row">
 												    	<label for="inputEmail3" class="col-sm-3 col-form-label">สถานะรับคืน</label>
 												    	<div class="col-sm-9">
+												    	<?php if($status[$row] == 0){ ?>
 											        	<select name="status" id="status" class="form-control" style="width: 100%;" required>
 															<option value="1" <?php if($status[$row] == 1){ echo " selected=\"selected\""; } ?>>ได้รับ</option>
 															<option value="0" <?php if($status[$row] == 0){ echo " selected=\"selected\""; } ?>>ยังไม่ได้รับคืน</option>
 														</select>
+														<?php 
+														}else{?>
+															<label for="inputEmail3" class="col-sm-9 col-form-label">ได้รับแล้ว</label>
+															<input type="hidden" name="status" id="status" value="1">
+														<?php } ?>
 											        	</div>
 												  	</div>
 											        	<input type="hidden" name="id" id="id" value="<?php echo $ids ?>">
@@ -273,7 +308,7 @@
 											        </div>
 											        <div class="modal-footer">
 											          <button class="btn btn-secondary" type="reset"><i class="fas fa-redo-alt"></i> Cancel</button>
-											          <button class="btn btn-success" type="submit"><i class="fas fa-edit"></i> Edit</button>
+											          <button class="btn btn-success" type="submit"><i class="fa fa-download"></i> Save</button>
 											        </div>
 											        </form>
 											      </div>
@@ -283,7 +318,7 @@
 											<span class="icon text-white-50">
 						                      <i class="fas fa-trash"></i>
 						                    </span>
-						                    <span class="text">DELETE</span></a></td>
+						                    <span class="text">ยกเลิก</span></a></td>
 										</tr>
 										<?php } ?>
 									</tbody>
