@@ -14,6 +14,7 @@ body {
     font-size: 3.5em;
     text-align: center;
 }
+
 .box h2 {
     color: black;
     font-size: 2.5em;
